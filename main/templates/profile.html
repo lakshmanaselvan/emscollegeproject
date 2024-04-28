@@ -4,9 +4,9 @@
     <!-- profile.html -->
 <div class="card w-50 mb-3">
     <div class="card-body">
-      <h5 class="card-title">{{ current_user|capfirst }}</h5>
-      <p class="card-text">Email : {{ current_user.email }}</p>
-      <p class="card-text">Designation : {{ current_user.role }}</p>
+      <h5 class="card-title">User Name: {{ current_user|capfirst }}</h5>
+      <p class="card-title">Email : {{ current_user.email }}</p>
+      <p class="card-title">Designation : {{ current_user.role }}</p>
     </div>
   </div>
           <table class="table">
@@ -17,6 +17,8 @@
                 <th scope="col">Venue</th>
                 <th scope="col">Chief Guest</th>
                 <th scope="col">Approval Status</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -31,6 +33,8 @@
                 {% else %}
                     <td class="text-success">{{ events.approval|capfirst }}</td>
                 {% endif %}
+                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Edit</a></td>
+                <td><a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Delete</a></td>
               </tr>
               {% endfor %}
             </tbody>

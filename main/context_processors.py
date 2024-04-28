@@ -8,8 +8,9 @@ def is_staff(request):
             # Try to retrieve the UserProfile instance
             user = UserProfile.objects.get(pk=user_id)
             # Check if the user is not a student
-            if user.role != 'Student':
+            if user.role.role != 'Student':
                 return {'is_staff': True}
+            print(is_staff)
         except UserProfile.DoesNotExist:
             pass  # Handle the case where UserProfile with given user_id doesn't exist
     # If user_id doesn't exist in session or if the user is a student, return False

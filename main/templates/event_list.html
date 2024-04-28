@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Events</h1>
+    <h1 class="text-center">Up Coming Events</h1><br>
     <table   class="table table-dark table-striped">
         <thead>
           <tr>
@@ -27,8 +27,8 @@
                 <td>{{event.endDate}}</td>
                 <td>{{event.startTime |time:"g:i"}}</td>
                 <td>{{event.endTime |time:"g:i"}}</td>
-                <td>{{event.chief_guest}}</td>
-                <td>{{event.organizer}}</td>
+                <td>{{event.chief_guest|capfirst}}</td>
+                <td>{{event.organizer|capfirst}}</td>
             </tr>
           {% endif %}
         </tbody>
