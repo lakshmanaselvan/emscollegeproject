@@ -14,7 +14,6 @@ from .models import Event
 from datetime import date
 
 # Create your views here.
-
 def home(request):
     return render(request, "home.html", {})
 
@@ -73,7 +72,7 @@ def login(request):
             return render(request, 'login.html', {'error_message':'Invalid Email or Password'})
     return render(request, 'login.html')
 
-@login_required
+#@login_required
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
