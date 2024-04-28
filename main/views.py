@@ -14,6 +14,10 @@ from .models import Event
 from datetime import date
 
 # Create your views here.
+
+def home(request):
+    return render(request, "home.html", {})
+
 def registration(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -53,24 +57,20 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        try:
-            user_profile = UserProfile.objects.get(email=email)
-            if check_password(password, user_profile.password):
-                if user_profile.is_verified:
-                    print('Hai')
-                    request.session['user_id'] = user_profile.id 
-                    if user_profile.role == 'Student':
-                        return redirect(login)
-                    else:
-                        return redirect(create_event)
-                else:
-                    return render(request, 'login.html', {'error_message': 'Your email is not verified yet'})
-            else:
+        user_profile = UserProfile.objects.get(email=email)
+        if check_password(password, user_profile.password):
+            if user_profile.is_verified:
                 print('Hai')
-                return render(request, 'login.html', {'error_message':'Invalid Email or Password'})
-        except UserProfile.DoesNotExist:
+                request.session['user_id'] = user_profile.id 
+                if user_profile.role == 'Student':
+                    return redirect(login)
+                else:
+                    return redirect(profile)
+            else:
+                return render(request, 'login.html', {'error_message': 'Your email is not verified yet'})
+        else:
             print('Hai')
-            return render(request, 'login.html', {'error_message': 'Invalid Email or Password'})
+            return render(request, 'login.html', {'error_message':'Invalid Email or Password'})
     return render(request, 'login.html')
 
 @login_required
@@ -78,31 +78,46 @@ def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-           user_id = request.session.get('user_id')
-           if user_id:
-                # Retrieve the user object using the user ID
-                user = UserProfile.objects.get(pk=user_id)
-                # Associate the user with the event being created
-                event = form.save(commit=False)
-                event.organizer = user
-                event.save()
-                subject = 'Event Approval Request'
-                html_message = render_to_string('approval_email.html', {'event': event})
-                plain_message = strip_tags(html_message)
-                from_email =  user.email
-                to_email = settings.EMAIL_HOST_USER 
-                send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-                return render(request, 'eventSuccess.html', {})
-           else:
-                return render(request, 'create_event.html', {'form':form})
+            user_id = request.session.get('user_id')
+            if user_id:
+                try:
+                    user = UserProfile.objects.get(pk=user_id)
+                    event = form.save(commit=False)
+                    event.organizer = user
+                    event.save()
+                    subject = 'Event Approval Request'
+                    html_message = render_to_string('approval_email.html', {'event': event})
+                    plain_message = strip_tags(html_message)
+                    from_email = user.email
+                    to_email = settings.EMAIL_HOST_USER
+                    send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+                    return render(request, 'eventSuccess.html', {})
+                except UserProfile.DoesNotExist:
+                    return render(request, 'create_event.html', {'form': form, 'error_message': 'User profile not found.'})
+                except Exception as e:
+                    return render(request, 'create_event.html', {'form': form, 'error_message': str(e)})
+            else:
+                return render(request, 'create_event.html', {'form': form, 'error_message': 'User ID not found in session.'})
     else:
         form = EventForm()
-    return render(request, 'create_event.html', {'form':form})
+    return render(request, 'create_event.html', {'form': form})
+
 
 def view_event(request):
     today = date.today()
     event_list = Event.objects.all()
     return render(request, "event_list.html", {'event_list':event_list, 'today': today})
+
+def profile(request):
+    user_id = request.session.get('user_id')
+    event = Event.objects.filter(organizer=user_id)
+    user = UserProfile.objects.get(pk=user_id)
+    print(user)
+    return render(request, 'profile.html', {'event': event,'current_user':user})
+
+def logout(request):
+    request.session.clear()
+    return redirect(login)
 
 # def approve_event(request, event_id):
 #     event = get_object_or_404(Event, pk=event_id)
