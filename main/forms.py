@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.hashers import make_password
 from .models import UserProfile
 from .models import Event
+from .models import EventApplication
 import uuid
 
 class RegistrationForm(forms.ModelForm):
@@ -30,8 +31,6 @@ class RegistrationForm(forms.ModelForm):
             user_profile.save()
         return user_profile
     
-    
-    
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
@@ -57,4 +56,17 @@ class EventForm(forms.ModelForm):
             'startDate': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Start Date', 'style': 'width: 500px; text-align: center'}),
             'endDate': forms.TextInput(attrs={'class':'form-control', 'placeholder':'End Date', 'style': 'width: 500px; text-align: center'}),
             'chief_guest': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Chief Guest', 'style': 'width: 500px; text-align: center'}),
+        }
+
+class ApplyForm(forms.ModelForm):
+    class Meta:
+        model = EventApplication
+        fields = ['year', 'department']
+        labels = {
+            'year':'select year',
+            'department':'department'
+        }
+        widgets = {
+            'year': forms.Select(attrs={'class':'form-control', 'style': 'width: 500px; text-align: center'}),
+            'department': forms.Select(attrs={'class':'form-control', 'style': 'width: 500px; text-align: center'}),
         }

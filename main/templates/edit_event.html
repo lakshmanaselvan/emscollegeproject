@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center">Create Event</h1>
+    <div class="row justify-content-center border p-4 rounded">
+        <div class="col-md-5">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Create Event</button>
+            </form>
+        </div>
+    </div>
+    <br><br><br><br>
+{% endblock %}

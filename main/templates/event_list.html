@@ -14,6 +14,7 @@
             <th scope="col">End Time</th>
             <th scope="col">Cheif Guest</th>
             <th scope="col">Organizer</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +30,7 @@
                 <td>{{event.endTime |time:"g:i"}}</td>
                 <td>{{event.chief_guest|capfirst}}</td>
                 <td>{{event.organizer|capfirst}}</td>
+                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Apply</a></td>
             </tr>
           {% endif %}
         </tbody>

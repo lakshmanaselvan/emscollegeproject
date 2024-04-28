@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+YEAR_CHOICES = [
+        ('1', 'First Year'),
+        ('2', 'Second Year'),
+        ('3', 'Third Year'),
+        ('4', 'Fourth Year'),
+    ]
+
+class Department(models.Model):
+    department = models.CharField(max_length=50)
+    def __str__(self):
+        return self.department
 
 class Role(models.Model):
     role = models.CharField(max_length=200)
@@ -21,6 +32,12 @@ class UserProfile(models.Model):
     has_module_perms = models.BooleanField(default=False)
     def __str__(self):
         return self.name
+    
+class EventApplication(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    year = models.CharField(max_length=1, choices=YEAR_CHOICES)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+
 
 class Venue(models.Model):
     name = models.CharField(max_length=200)

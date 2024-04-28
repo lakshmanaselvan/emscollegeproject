@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
+from .forms import ApplyForm
 from django.core.mail import send_mail
 from main.models import UserProfile
 from .forms import RegistrationForm
@@ -99,6 +100,10 @@ def create_event(request):
         form = EventForm()
         return render(request, 'create_event.html', {'form':form})
 
+def apply_event(request):
+    form = ApplyForm()
+    return render(request, 'applyEvent.html', {'form':form})
+
 def view_event(request):
     today = date.today()
     event_list = Event.objects.all()
@@ -124,3 +129,19 @@ def approve_event(request, id):
 def event_details(request, id):
      event = get_object_or_404(Event, pk=id)
      return render(request, 'event_details.html', {'event': event})
+
+def delete(request, id):
+    event = get_object_or_404(Event, pk=id)
+    event.delete()
+    return redirect(profile)
+
+def EditEvent(request, id):
+    event = get_object_or_404(Event, pk=id)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_details', id)
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form, 'event': event})

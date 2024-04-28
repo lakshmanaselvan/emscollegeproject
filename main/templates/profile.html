@@ -33,8 +33,8 @@
                 {% else %}
                     <td class="text-success">{{ events.approval|capfirst }}</td>
                 {% endif %}
-                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Edit</a></td>
-                <td><a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Delete</a></td>
+                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'edit' events.id %}">Edit</a></td>
+                <td><a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'delete' events.id %}">Delete</a></td>
               </tr>
               {% endfor %}
             </tbody>
