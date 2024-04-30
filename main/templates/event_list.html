@@ -30,7 +30,7 @@
                 <td>{{event.endTime |time:"g:i"}}</td>
                 <td>{{event.chief_guest|capfirst}}</td>
                 <td>{{event.organizer|capfirst}}</td>
-                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Apply</a></td>
+                <td><a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'apply' event.id %}">Apply</a></td>
             </tr>
           {% endif %}
         </tbody>

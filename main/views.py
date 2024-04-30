@@ -5,6 +5,8 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 from .forms import ApplyForm
 from django.core.mail import send_mail
 from main.models import UserProfile
@@ -99,9 +101,39 @@ def create_event(request):
     else:
         form = EventForm()
         return render(request, 'create_event.html', {'form':form})
+    
 
-def apply_event(request):
-    form = ApplyForm()
+def apply_event(request, id):
+    event = get_object_or_404(Event, pk=id)
+    user_id = request.session.get('user_id')
+    print(user_id)
+    user_profile = UserProfile.objects.filter(id=user_id)
+    for i in user_profile:
+        fromail = i.email
+        print(fromail)
+    tomail = None
+    if request.method == 'POST':
+        form = ApplyForm(request.POST)
+        if form.is_valid():
+            user = UserProfile.objects.get(pk=user_id)
+            application = form.save(commit=False)
+            application.event = event
+            application.user = user
+            application.save()
+            userproof = application.department
+            if userproof == "CSE":
+                print('Hai')
+                user_profiles = UserProfile.objects.filter(role='2')
+                print(user_profiles.email)
+                for i in user_profiles:
+                    tomail = i.email
+        subject = 'Event Approval Request'
+        html_message = render_to_string('event_applied.html', {'event': event})
+        plain_message = strip_tags(html_message)
+        send_mail(subject, plain_message, fromail, [tomail], html_message=html_message)
+        return redirect('view_event')
+    else:
+        form = ApplyForm()
     return render(request, 'applyEvent.html', {'form':form})
 
 def view_event(request):
